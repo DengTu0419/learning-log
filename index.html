@@ -1,0 +1,25 @@
+<!DOCTYPE html>                  <!-- 声明这是 HTML5 文档 -->
+<html>
+<head>
+  <meta charset="utf-8">         <!-- 用 UTF-8 编码，中文不乱码 -->
+  <title>词频统计</title>         <!-- 浏览器标签页上显示的标题 -->
+</head>
+<body>
+  <h2>词频统计</h2>              <!-- 页面上的大标题 -->
+  <textarea id="text" rows="6" cols="60">hello world hello fastapi</textarea>  <!-- 输入框：id 是 JS 找到它的名字 -->
+  <br>
+  <button onclick="submitText()">统计</button>  <!-- 按钮：点击时调用下面的 JS 函数 -->
+  <pre id="result"></pre>        <!-- 结果区域：JS 把词频写进这里 -->
+
+  <script>
+    // 点击按钮时执行：读输入 → 请求 /stats 接口 → 把结果显示到页面
+    async function submitText() {
+      const text = document.getElementById("text").value;      // 1. 读出输入框里的文字
+      const url = "/stats?text=" + encodeURIComponent(text);   // 2. 拼请求地址；空格、中文要编码
+      const response = await fetch(url);                        // 3. 发 HTTP 请求（浏览器里的 curl），等响应
+      const data = await response.json();                       // 4. 把响应体的 JSON 文本解析成对象
+      document.getElementById("result").textContent = JSON.stringify(data.top, null, 2);  // 5. 显示到页面
+    }
+  </script>
+</body>
+</html>
